@@ -13,7 +13,7 @@ void error(char *msg)
 
 int main(int argc, char *argv[])
 {
-    int sockfd, portno, n;
+    int sockfd, portno, nr, nw;
     struct sockaddr_in serv_addr;
     struct hostent *server;
     clock_t start, end;
@@ -75,14 +75,21 @@ int main(int argc, char *argv[])
     // Agregado: TOMAR EL TIEMPO
     start = clock();
     //ENVIA UN MENSAJE AL SOCKET 
-	n = write(sockfd,buffer, buffer_size - 1);
-    if (n < 0) 
+	nw = write(sockfd,buffer, buffer_size - 1);
+    /*
+    while (total_written < buffer_size - 1) {
+      nw = write(sockfd, buffer + total_written, buffer_size - 1 - total_written);
+      if (nw < 0) error("ERROR writing to socket");
+      total_written += nw;
+    }
+    */
+    if (nw < 0) 
          error("ERROR writing to socket");
     bzero(buffer,buffer_size);
 	
     //ESPERA RECIBIR UNA RESPUESTA
-	n = read(sockfd,buffer,buffer_size - 1);
-    if (n < 0) 
+	nr = read(sockfd,buffer,buffer_size - 1);
+    if (nr < 0) 
          error("ERROR reading from socket");
     end = clock();
 	printf("%s\n",buffer);
@@ -93,5 +100,7 @@ int main(int argc, char *argv[])
      //Agregado: CERRAR SOCKET Y LIBERAR BUFFER
     close(sockfd);
     free(buffer);
+    // Agregado: VERIFICAR LECTURA Y ESCRITURA DE BYTES EFECTIVA
+    printf("Bytes written: %d\n", nw);
     return 0;
 }
