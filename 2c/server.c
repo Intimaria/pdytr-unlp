@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
      // Agregado: VERIFICAR
      for (int i = 0; i < buffer_size; i++) {
-          printf("%c",buffer[i]);
+          // printf("%c",buffer[i]);
           if (buffer[i] != 'A') {
                error("ERROR wrong data received");
           }
