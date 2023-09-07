@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <sys/types.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h> 
+#include <netdb.h>
 #include <time.h>
 
 void error(char *msg)
@@ -18,6 +20,7 @@ int main(int argc, char *argv[])
     struct hostent *server;
     clock_t start, end;
     double cpu_time_used;
+
 
 
     // Agregado: TOMA BUFFER SIZE COMO ARGUMENTO
@@ -62,45 +65,34 @@ int main(int argc, char *argv[])
 	//DESCRIPTOR - DIRECCION - TAMAÑO DIRECCION
     if (connect(sockfd,&serv_addr,sizeof(serv_addr)) < 0) 
         error("ERROR connecting");
-    printf("Please enter the message: ");
     bzero(buffer,buffer_size);
-    //fgets(buffer,buffer_size,stdin);
 
     // Agregado: LLENAR EL BUFFER CON PATRON REPETITVO 
-    for (int i = 0; i < buffer_size - 1; i++) {
-        buffer[i] = 'A' + (i % 26);
-    }
-    buffer[buffer_size - 1] = '\0';
+    memset(buffer,'A',buffer_size);
 
     // Agregado: TOMAR EL TIEMPO
     start = clock();
-    //ENVIA UN MENSAJE AL SOCKET 
-	nw = write(sockfd,buffer, buffer_size - 1);
-    /*
-    while (total_written < buffer_size - 1) {
-      nw = write(sockfd, buffer + total_written, buffer_size - 1 - total_written);
-      if (nw < 0) error("ERROR writing to socket");
-      total_written += nw;
-    }
-    */
-    if (nw < 0) 
+
+    //ENVIA UN MENSAJE AL SOCKET
+    // printf("Sending %d bytes \n", buffer_size);
+    if (write(sockfd,buffer, buffer_size) < 0) 
          error("ERROR writing to socket");
+
     bzero(buffer,buffer_size);
 	
     //ESPERA RECIBIR UNA RESPUESTA
-	nr = read(sockfd,buffer,buffer_size - 1);
+	nr = read(sockfd,buffer,18);
     if (nr < 0) 
          error("ERROR reading from socket");
     end = clock();
-	printf("%s\n",buffer);
-    // Agregado: IMPRIMIR TIEMPO 
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    printf("%f\n",cpu_time_used);
 
-     //Agregado: CERRAR SOCKET Y LIBERAR BUFFER
+    // Agregado: IMPRIMIR TIEMPO 
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC / 2;
+    printf("%f\t",cpu_time_used);
+   
+
+    //Agregado: CERRAR SOCKET Y LIBERAR BUFFER
     close(sockfd);
     free(buffer);
-    // Agregado: VERIFICAR LECTURA Y ESCRITURA DE BYTES EFECTIVA
-    printf("Bytes written: %d\n", nw);
     return 0;
 }
