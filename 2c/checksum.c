@@ -1,8 +1,8 @@
 #include "checksum.h"
 
 void calculate_checksum(const char *data, size_t len, unsigned char *output) {
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, data, len);
-    SHA256_Final(output, &sha256);
+    MD5_CTX md5;
+    MD5_Init(&md5);
+    MD5_Update(&md5, data, len);
+    MD5_Final(output, &md5);
 }

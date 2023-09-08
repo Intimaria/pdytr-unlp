@@ -1,7 +1,7 @@
 #ifndef CHECKSUM_H
 #define CHECKSUM_H
 
-#include <openssl/sha.h>
+#include <openssl/md5.h>
 
 void calculate_checksum(const char *data, size_t len, unsigned char *output);
 
