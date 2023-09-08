@@ -6,6 +6,7 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "checksum.h"
 
 void error(char *msg)
 {
@@ -16,9 +17,11 @@ void error(char *msg)
 int main(int argc, char *argv[])
 {
      int sockfd, newsockfd, portno, clilen;
-
+     unsigned char checksum[SHA256_DIGEST_LENGTH];
      struct sockaddr_in serv_addr, cli_addr;
      int n;
+     memset(checksum, 0, SHA256_DIGEST_LENGTH);
+
      // Agregado: SE AGREGA BUFFER SIZE COMO ARGUMENTO
      if (argc < 3) {
          fprintf(stderr,"usage: ./server port buffer_size\n");
@@ -48,8 +51,8 @@ int main(int argc, char *argv[])
 
      bzero((char *) &serv_addr, sizeof(serv_addr));
      // ASIGNA EL PUERTO PASADO POR ARGUMENTO
-	// ASIGNA LA IP EN DONDE ESCUCHA (SU PROPIA IP)
-	portno = atoi(argv[1]);
+     // ASIGNA LA IP EN DONDE ESCUCHA (SU PROPIA IP)
+     portno = atoi(argv[1]);
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
@@ -83,14 +86,24 @@ int main(int argc, char *argv[])
           }
           buffer_read += n;
           } while (buffer_read != buffer_size);
-
-     // Agregado: VERIFICAR
+     
+     // Agregado: CALUCLA E IMPRIME CHECKSUM
+     calculate_checksum(buffer, buffer_size, checksum);
+     
+     printf("Checksum after receiving: ");
+        for(int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+        printf("%02x", checksum[i]);
+     }
+     
+        printf("\n");
+     /* Agregado: VERIFICAR
      for (int i = 0; i < buffer_size; i++) {
           // printf("%c",buffer[i]);
           if (buffer[i] != 'A') {
                error("ERROR wrong data received");
           }
      }
+     */
      
      // Agregado: IMPRIME CANTIDAD DE BYTES RECIBIDOS
      printf("Bytes recived: %d\n", buffer_read);
