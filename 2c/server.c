@@ -17,10 +17,10 @@ void error(char *msg)
 int main(int argc, char *argv[])
 {
      int sockfd, newsockfd, portno, clilen;
-     unsigned char checksum[MD5_DIGEST_LENGTH];
+     unsigned char checksum[SHA512_DIGEST_LENGTH];
      struct sockaddr_in serv_addr, cli_addr;
      int n;
-     memset(checksum, 0, MD5_DIGEST_LENGTH);
+     memset(checksum, 0, SHA512_DIGEST_LENGTH);
 
      // Agregado: SE AGREGA BUFFER SIZE COMO ARGUMENTO
      if (argc < 3) {
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
      calculate_checksum(buffer, buffer_size, checksum);
      
      printf("Checksum after receiving: ");
-        for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+        for(int i = 0; i < SHA512_DIGEST_LENGTH; i++) {
         printf("%02x", checksum[i]);
      }
      
