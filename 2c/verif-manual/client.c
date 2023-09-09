@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
     // Agregado: LLENAR EL BUFFER CON PATRON REPETITVO 
     memset(buffer,'A',buffer_size);
 
+
     // Agregado: CALCULAR CHECKSUM
     calculate_checksum(buffer, buffer_size, checksum);
     
