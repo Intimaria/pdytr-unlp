@@ -28,9 +28,9 @@ int main(int argc, char *argv[])
      int buffer_size = atoi(argv[2]);  // Take the buffer size from the arguments
      char *buffer = malloc(buffer_size * sizeof(char));
 
-     if (buffer == NULL) {
-        error("ERROR allocating memory for buffer");
-     } 
+     //if (buffer == NULL) {
+     //   error("ERROR allocating memory for buffer");
+     //} 
 
 	// CREA EL FILE DESCRIPTOR DEL SOCKET PARA LA CONEXION
      sockfd = socket(AF_INET, SOCK_STREAM, 0);

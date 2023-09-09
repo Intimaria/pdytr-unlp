@@ -3,7 +3,7 @@
 gcc -w client.c -lm -o client
 gcc -w server.c -lm -o server
 
-for exp in 3 4 5 6; do
+for exp in 3 4 5 6 7 8 9 10 11 12 13 14 15; do
     size=$((10**exp))
     echo "Buffer size $size bytes"
     
