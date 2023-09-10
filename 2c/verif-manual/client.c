@@ -5,7 +5,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include "checksum.h"
 
 void error(char *msg)
 {
@@ -20,8 +19,6 @@ int main(int argc, char *argv[])
     struct hostent *server;
     clock_t start, end;
     double cpu_time_used;
-    unsigned char checksum[MD5_DIGEST_LENGTH]; 
-    memset(checksum, 0, MD5_DIGEST_LENGTH);
     
     // Agregado: TOMA BUFFER SIZE COMO ARGUMENTO
     if (argc < 4) {
@@ -69,17 +66,6 @@ int main(int argc, char *argv[])
 
     // Agregado: LLENAR EL BUFFER CON PATRON REPETITVO 
     memset(buffer,'A',buffer_size);
-
-
-    // Agregado: CALCULAR CHECKSUM
-    calculate_checksum(buffer, buffer_size, checksum);
-    
-    // Agregado: CHECKSUM PRINT
-    printf("Checksum before sending: ");
-    for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
-      printf("%02x", checksum[i]);
-    }
-    printf("\n");
 
     //ENVIA UN MENSAJE AL SOCKET
     printf("Sending %d bytes \n", buffer_size);
