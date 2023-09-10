@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
     clock_t start, end;
     double cpu_time_used;
 
-
     // Agregado: TOMA BUFFER SIZE COMO ARGUMENTO
     if (argc < 4) {
        fprintf(stderr,"usage: ./client hostname port buffer_size\n", argv[0]);
@@ -30,9 +29,10 @@ int main(int argc, char *argv[])
     // Agregado: ALOCA MEMORIA PARA EL BUFFER 
     int buffer_size = atoi(argv[3]); 
     char *buffer = malloc(buffer_size * sizeof(char));
-    if (buffer == NULL) {
-        error("ERROR allocating memory for buffer");
-    }
+    // Quitamos la verificacion para ver el error segmentation fault
+    // if (buffer == NULL) {
+    //     error("ERROR allocating memory for buffer");
+    // }
 
 	//TOMA EL NUMERO DE PUERTO DE LOS ARGUMENTOS
     portno = atoi(argv[2]);
