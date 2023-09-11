@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "checksum.h"
 #include <time.h>
 
 void error(char *msg)
@@ -20,9 +21,9 @@ int main(int argc, char *argv[])
     struct hostent *server;
     clock_t start, end;
     double cpu_time_used;
-
-
-
+    unsigned char checksum[SHA512_DIGEST_LENGTH]; 
+    memset(checksum, 0, SHA512_DIGEST_LENGTH);
+    
     // Agregado: TOMA BUFFER SIZE COMO ARGUMENTO
     if (argc < 4) {
        fprintf(stderr,"usage: ./client hostname port buffer_size\n", argv[0]);

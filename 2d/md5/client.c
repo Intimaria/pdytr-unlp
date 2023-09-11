@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "checksum.h"
 #include <time.h>
 
 void error(char *msg)
@@ -13,27 +14,16 @@ void error(char *msg)
     exit(0);
 }
 
-// Para medir el tiempo
-double dwalltime()
-{
-  double sec;
-  struct timeval tv;
-
-  gettimeofday(&tv, NULL);
-  sec = tv.tv_sec + tv.tv_usec / 1000000.0;
-  return sec;
-}
-
 int main(int argc, char *argv[])
 {
     int sockfd, portno, nr, nw;
     struct sockaddr_in serv_addr;
     struct hostent *server;
-    // clock_t start, end;
-    // double cpu_time_used;
-
-
-
+    clock_t start, end;
+    double cpu_time_used;
+    unsigned char checksum[MD5_DIGEST_LENGTH]; 
+    memset(checksum, 0, MD5_DIGEST_LENGTH);
+    
     // Agregado: TOMA BUFFER SIZE COMO ARGUMENTO
     if (argc < 4) {
        fprintf(stderr,"usage: ./client hostname port buffer_size\n", argv[0]);
@@ -81,9 +71,18 @@ int main(int argc, char *argv[])
     // Agregado: LLENAR EL BUFFER CON PATRON REPETITVO 
     memset(buffer,'A',buffer_size);
 
+    // Agregado: CALCULAR CHECKSUM
+    calculate_checksum(buffer, buffer_size, checksum);
+    
+    // Agregado: CHECKSUM PRINT
+    // printf("Checksum before sending: ");
+    // for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+    //   printf("%02x", checksum[i]);
+    // }
+    // printf("\n");
+
     // Agregado: TOMAR EL TIEMPO
-    // start = clock();
-    double start = dwalltime();
+    start = clock();
 
     //ENVIA UN MENSAJE AL SOCKET
     // printf("Sending %d bytes \n", buffer_size);
@@ -96,12 +95,11 @@ int main(int argc, char *argv[])
 	nr = read(sockfd,buffer,18);
     if (nr < 0) 
          error("ERROR reading from socket");
-    //end = clock();
+    end = clock();
 
     // Agregado: IMPRIMIR TIEMPO 
-    // cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC / 2;
-    // printf("%f\t",cpu_time_used);
-    printf("%f\t", (dwalltime() - start) / 2);
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC / 2;
+    printf("%f\t",cpu_time_used);
    
 
     //Agregado: CERRAR SOCKET Y LIBERAR BUFFER
